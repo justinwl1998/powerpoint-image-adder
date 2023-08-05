@@ -1,11 +1,5 @@
 import os
-import copy
-from tkinter import filedialog as fd
-from tkinter import messagebox
-from tkinter import ttk
-from tkinter import *
 from pptx import Presentation
-from pptx.util import Inches
 from PIL import Image
 
 def add_image(slide, placeholder_id, img_path):
@@ -31,19 +25,30 @@ def add_image(slide, placeholder_id, img_path):
         placeholder.crop_left = -difference_on_each_side
         placeholder.crop_right = -difference_on_each_side
 
-def populateSlides(images, presentation):
-    print(images)
-    print(images[0])
+def populateSlides(images, presentation, progress):
+    #debug to remove test pptx
+    if os.path.exists('test.pptx'):
+        os.remove('test.pptx')
+    
     prs = Presentation(presentation)
 
     index = 0
     imgIndex = 0
+    breakOut = False
 
-    while index < len(prs.slides) and imgIndex < len(images):
+    while not breakOut:
+        if index >= len(prs.slides):
+            break
         slide = prs.slides[index]
         for shape in slide.placeholders:
             if 'Picture Placeholder' in shape.name:
-                print("attempting to add image: ", images[imgIndex])
+                if imgIndex >= len(images):
+                    breakOut = True
+                    break
                 add_image(slide, shape.placeholder_format.idx, images[imgIndex])
                 imgIndex += 1
         index += 1
+        #progress.set((i/len(prs.slides)) * 100)
+
+    progress['value'] = 100
+    prs.save('test.pptx')
