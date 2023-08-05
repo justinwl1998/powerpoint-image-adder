@@ -5,7 +5,7 @@ from tkinter import filedialog as fd
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter import *
-from helpers import add_image, populateSlides
+from helpers import add_image, populateSlides, readSlides
 
 def threading():
     progress.place(anchor = CENTER, relx=0.5, rely=0.6)
@@ -89,6 +89,7 @@ progress = ttk.Progressbar(root, orient = HORIZONTAL, length = 250, mode="determ
 
 B3 = Button(root, text="Read", command=threading, state=DISABLED)
 B3.place(relx=0.5, rely=0.8, anchor=CENTER, height=32, width=150)
+
 root.mainloop()
 
 

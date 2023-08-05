@@ -1,6 +1,8 @@
 import os
 from pptx import Presentation
+#from pptx import PlaceholderPicture
 from PIL import Image
+import re
 
 def add_image(slide, placeholder_id, img_path):
     placeholder = slide.placeholders[placeholder_id]
@@ -27,8 +29,8 @@ def add_image(slide, placeholder_id, img_path):
 
 def populateSlides(images, presentation, progress):
     #debug to remove test pptx
-    if os.path.exists('test.pptx'):
-        os.remove('test.pptx')
+    #if os.path.exists('test.pptx'):
+    #    os.remove('test.pptx')
     
     prs = Presentation(presentation)
 
@@ -41,7 +43,11 @@ def populateSlides(images, presentation, progress):
             break
         slide = prs.slides[index]
         for shape in slide.placeholders:
-            if 'Picture Placeholder' in shape.name:
+            if type(shape).__name__ == "PlaceholderPicture":
+                print("Placeholder is occupied! Finding next available one...")
+                continue
+            
+            if type(shape).__name__ == "PicturePlaceholder":
                 if imgIndex >= len(images):
                     breakOut = True
                     break
@@ -51,4 +57,7 @@ def populateSlides(images, presentation, progress):
         #progress.set((i/len(prs.slides)) * 100)
 
     progress['value'] = 100
-    prs.save('test.pptx')
+    prs.save(presentation)
+
+
+    
