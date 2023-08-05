@@ -11,8 +11,7 @@ from PIL import Image
 from helpers import add_image, populateSlides
 
 def checkInputs():
-    print(imageList)
-    if len(root.splitlist(entry_text.get())) > 0 and template_text.get() != "":
+    if len(image_list) > 0 and template_text.get() != "":
         print("Both conditions are met!")
         B3['state'] = NORMAL
     else:
@@ -25,16 +24,12 @@ def imageSelectCallBack():
         multiple=True,
         filetypes=[('Image files', ['.jpg', '.png'])])
 
-    imageList = []
-    for img in selected:
-        print(img)
-        imageList.append(img)
+    fileList = root.splitlist(selected)
+    image_list.clear()
+    pseudoList = ""
+    for f in fileList:
+        image_list.append(f)
 
-    print(imageList)
-        
-    #print(list(selected))
-    entry_text.set(selected)
-    #print(entry_text.get())
     num_label.set(str(len(root.splitlist(selected))) + " images")
     
     checkInputs()
@@ -52,21 +47,17 @@ def populateCallback():
     B1['state'] = "disabled"
     B2['state'] = "disabled"
     B3['state'] = "disabled"
-
-
-    for img in entry_text.get():
-        print(img)
-    print(5/0)
     
-    populateSlides(list(entry_text.get()), template_text.get())
+    populateSlides(image_list, template_text.get())
     msg_box = messagebox.showinfo(message="Wrote to presentation")
     B1['state'] = "normal"
     B2['state'] = "normal"
     B3['state'] = "normal"
     return
 
+image_list = []
+
 root = Tk()
-imageList = []
 root.title('Powerpoint Mass Image Adder')
 root.resizable(False, False)
 root.geometry('500x300')
@@ -74,7 +65,6 @@ root.geometry('500x300')
 L1 = Label(root, text="Images directory", justify="left", anchor="w")
 L1.grid(column=0, row=3, sticky=W, pady=(15,0), padx=(30,0))
 
-entry_text = StringVar()
 num_label = StringVar()
 num_label.set("0 images")
 imgCountLabel = Label(root, textvariable=num_label, justify="left", anchor="w")
