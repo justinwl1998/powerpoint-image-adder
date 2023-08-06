@@ -5,7 +5,7 @@ from tkinter import filedialog as fd
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter import *
-from helpers import add_image, populateSlides, readSlides
+from helpers import add_image, populateSlides
 
 def threading():
     progress.place(anchor = CENTER, relx=0.5, rely=0.6)
@@ -48,8 +48,12 @@ def populateCallback():
     B2['state'] = "disabled"
     B3['state'] = "disabled"
     #progress.start()
-    populateSlides(image_list, template_text.get(), progress)
-    msg_box = messagebox.showinfo(message="Wrote to presentation")
+    resultCode = populateSlides(image_list, template_text.get(), progress)
+    if resultCode != 4:
+        msg_box = messagebox.askquestion("Status", "Pictures successfully added to " + template_text.get() + "\n\nDo you want to open the file?")
+    else:
+        msg_box = messagebox.showerror("Status", "An error occurred.")
+    
     progress.place_forget()
     progress['value'] = 0
     B1['state'] = "normal"
