@@ -12,6 +12,7 @@ def threading():
     t1 = Thread(target=populateCallback())
     t1.start()
 
+# Prevent adding of images until both fields are properly filled
 def checkInputs():
     if len(image_list) > 0 and template_text.get() != "":
         B3['state'] = NORMAL
@@ -47,8 +48,7 @@ def populateCallback():
     B1['state'] = "disabled"
     B2['state'] = "disabled"
     B3['state'] = "disabled"
-    #progress.start()
-    resultCode = populateSlides(image_list, template_text.get(), progress)
+    resultCode = populateSlides(image_list, template_text.get(), progress, counter_label)
     if resultCode != 4:
         msg_box = messagebox.askquestion("Status", "Pictures successfully added to " + template_text.get() + "\n\nDo you want to open the file?")
     else:
@@ -59,6 +59,7 @@ def populateCallback():
     B1['state'] = "normal"
     B2['state'] = "normal"
     B3['state'] = "normal"
+    counter_label.set("")
     return
 
 image_list = []
@@ -88,11 +89,17 @@ E2.grid(column=0, row=7, sticky=W, padx=(30,0))
 B2 = Button(root, text="...", command=templateSelectCallBack, width=8)
 B2.grid(column=1, row=7, sticky=W)
 
+# Add counter for images successfully added?
+
 #Progress bar eventually
 progress = ttk.Progressbar(root, orient = HORIZONTAL, length = 250, mode="determinate")
 
+counter_label = StringVar()
+L3 = Label(root, textvariable=counter_label, justify="left", anchor="w")
+L3.place(relx=0.5, rely=0.75, anchor=CENTER)
+
 B3 = Button(root, text="Read", command=threading, state=DISABLED)
-B3.place(relx=0.5, rely=0.8, anchor=CENTER, height=32, width=150)
+B3.place(relx=0.5, rely=0.85, anchor=CENTER, height=32, width=150)
 
 root.mainloop()
 

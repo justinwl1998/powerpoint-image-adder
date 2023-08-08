@@ -1,6 +1,9 @@
 from pptx import Presentation
 from PIL import Image
 
+
+# Adds images and scales them based on the size of the
+# placeholder in the presentation.
 def add_image(slide, placeholder_id, img_path):
     placeholder = slide.placeholders[placeholder_id]
     im = Image.open(img_path)
@@ -24,12 +27,15 @@ def add_image(slide, placeholder_id, img_path):
         placeholder.crop_left = -difference_on_each_side
         placeholder.crop_right = -difference_on_each_side
 
-def populateSlides(images, presentation, progress):    
+# Loops through every slide and inserts an image in each placeholder
+# that takes an image.
+def populateSlides(images, presentation, progress, counter_label):    
     prs = Presentation(presentation)
     
     resultCode = 0
     index = 0
     imgIndex = 0
+    hits = 0
     breakOut = False
 
     while not breakOut:
@@ -50,11 +56,13 @@ def populateSlides(images, presentation, progress):
                         breakOut = True
                         resultCode = 1
                         break
+                    hits += 1
                     add_image(slide, shape.placeholder_format.idx, images[imgIndex])
                     imgIndex += 1
+                    counter_label.set(str(hits) + " image(s) added")
             index += 1
         except:
-            # hopefully this catches all of the error cases
+            # error code case
             return 4
 
     progress['value'] = 100
